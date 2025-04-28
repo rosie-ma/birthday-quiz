@@ -5,203 +5,324 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Quiz With Music</title>
     <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #fef5e7, #ffe4e1);
+        color: #333;
+        text-align: center;
+        padding: 40px;
+        overflow-x: hidden;
+        margin: 0;
+        height: 100vh;
+      }
+
+      h1 {
+        font-size: 2.5em;
+        color: #ff69b4;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      button {
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 20px auto;
+        cursor: pointer;
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(45deg, #ff69b4, #ff8c8c);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: inline-block;
+      }
+
+      button:not(.slide-button):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(45deg, #ff8c8c, #ff69b4);
+      }
+
+      button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      #quiz,
+      #finalMessage,
+      #videoContainer,
+      #sliderContainer {
+        display: none;
+        max-width: fit-content;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      #question {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      #options {
+        width: fit-content;
+        margin: 0 auto;
+        text-align: left;
+      }
+
+      #message {
+        margin-top: 15px;
+        font-size: 1.1em;
+        color: #e91e63;
+      }
+
+      #finalMessage {
+        font-size: 1.2em;
+        line-height: 1.6;
+        color: #333;
+        text-align: left;
+      }
+
+      #videoContainer video {
+        width: 100%;
+        height: 315px;
+        border-radius: 10px;
+      }
+
+      .heart {
+        position: fixed;
+        color: #ff69b4;
+        font-size: 20px;
+        animation: floatUp 5s ease-in-out infinite;
+        opacity: 0.8;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(1) rotate(0deg);
+          opacity: 0.8;
+        }
+
+        50% {
+          transform: translateY(-50vh) scale(1.2) rotate(15deg);
+          opacity: 1;
+        }
+
+        100% {
+          transform: translateY(-100vh) scale(1.5) rotate(30deg);
+          opacity: 0;
+        }
+      }
+
+      .radio-option {
+        display: block;
+        margin: 15px auto;
+        font-size: 1.1em;
+        color: #333;
+        padding: 10px;
+        border-radius: 10px;
+        transition: background 0.2s;
+      }
+
+      .radio-option:hover {
+        background: rgba(255, 105, 180, 0.1);
+      }
+
+      input[type="radio"] {
+        margin-right: 12px;
+        accent-color: #ff69b4;
+        transform: scale(1.2);
+      }
+
+      audio {
+        display: none;
+      }
+
+      .sliderContainer {
+        max-width: 90%;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .slider {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        max-width: 800px;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slides {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        width: 100%;
+        height: 100%;
+      }
+
+      .slide {
+        min-width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+
+      .slide img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 10px;
+      }
+
+      .prev, .next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 105, 180, 0.7);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 18px;
+        transition: background 0.2s;
+        z-index: 10;
+      }
+
+      .prev:hover, .next:hover {
+        background: rgba(255, 105, 180, 1);
+      }
+
+      .prev {
+        left: 10px;
+      }
+
+      .next {
+        right: 10px;
+      }
+
+      @media (max-width: 600px) {
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #fef5e7, #ffe4e1);
-            color: #333;
-            text-align: center;
-            padding: 40px;
-            overflow-x: hidden;
-            margin: 0;
-            height: 100vh;
+          padding: 15px;
         }
 
         h1 {
-            font-size: 2.5em;
-            color: #ff69b4;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+          font-size: 2em;
+          margin-bottom: 15px;
         }
 
         button {
-            padding: 12px 24px;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 20px auto;
-            cursor: pointer;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(45deg, #ff69b4, #ff8c8c);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-block;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #ff8c8c, #ff69b4);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          padding: 10px 15px;
+          font-size: 14px;
+          width: 90%;
+          max-width: 220px;
         }
 
         #quiz,
         #finalMessage,
-        #videoContainer {
-            display: none;
-            max-width: fit-content;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        #videoContainer,
+        #sliderContainer {
+          padding: 10px;
+          border-radius: 8px;
         }
 
         #question {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        #options {
-            width: fit-content;
-            margin: 0 auto;
-            text-align: left;
+          font-size: 1.4em;
+          margin-bottom: 10px;
         }
 
         #message {
-            margin-top: 15px;
-            font-size: 1.1em;
-            color: #e91e63;
+          font-size: 0.9em;
         }
 
         #finalMessage {
-            font-size: 1.2em;
-            line-height: 1.6;
-            color: #333;
-            text-align: left;
+          font-size: 0.95em;
         }
 
-        #videoContainer iframe {
-            width: 100%;
-            height: 315px;
-            border-radius: 10px;
-        }
-
-        .heart {
-            position: fixed;
-            color: #ff69b4;
-            font-size: 20px;
-            animation: floatUp 5s ease-in-out infinite;
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(1) rotate(0deg);
-                opacity: 0.8;
-            }
-
-            50% {
-                transform: translateY(-50vh) scale(1.2) rotate(15deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-100vh) scale(1.5) rotate(30deg);
-                opacity: 0;
-            }
+        #videoContainer video {
+          height: 200px;
         }
 
         .radio-option {
-            display: block;
-            margin: 15px auto;
-            font-size: 1.1em;
-            color: #333;
-            padding: 10px;
-            border-radius: 10px;
-            transition: background 0.2s;
-        }
-
-        .radio-option:hover {
-            background: rgba(255, 105, 180, 0.1);
+          margin: 8px auto;
+          padding: 6px;
+          font-size: 1.2em;
         }
 
         input[type="radio"] {
-            margin-right: 12px;
-            accent-color: #ff69b4;
-            transform: scale(1.2);
+          margin-right: 8px;
+          transform: scale(1.2);
         }
 
-        audio {
-            display: none; /* Hide audio controls */
+        .heart {
+          font-size: 14px;
         }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 2em;
-                margin-bottom: 15px;
-            }
-
-            button {
-                padding: 10px 15px;
-                font-size: 14px;
-                width: 90%;
-                max-width: 220px;
-            }
-
-            #quiz,
-            #finalMessage,
-            #videoContainer {
-                padding: 10px;
-                border-radius: 8px;
-            }
-
-            #question {
-                font-size: 1.4em;
-                margin-bottom: 10px;
-            }
-
-            #message {
-                font-size: 0.9em;
-            }
-
-            #finalMessage {
-                font-size: 0.95em;
-            }
-
-            #videoContainer iframe {
-                height: 200px;
-            }
-
-            .radio-option {
-                margin: 8px auto;
-                padding: 6px;
-                font-size: 1.2em;
-            }
-
-            input[type="radio"] {
-                margin-right: 8px;
-                transform: scale(1.2);
-            }
-
-            .heart {
-                font-size: 14px;
-            }
+        .sliderContainer {
+          max-width: 100%;
+          height: calc(100vh - 40px);
+          padding: 10px;
+          justify-content: space-between;
         }
+
+        .slider {
+          max-width: 100%;
+          height: calc(100% - 60px);
+          margin-bottom: 10px;
+        }
+
+        .slide img {
+          max-height: 100%;
+          max-width: 100%;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .prev, .next {
+          width: 40px;
+          height: 40px;
+          padding: 0;
+          font-size: 20px;
+          line-height: 40px;
+          background: rgba(255, 105, 180, 0.9);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          z-index: 100;
+        }
+
+        .prev {
+          left: 5px;
+        }
+
+        .next {
+          right: 5px;
+        }
+
+        .prev:hover, .next:hover {
+          background: rgba(255, 105, 180, 1);
+          transform: scale(1.1);
+        }
+      }
     </style>
 </head>
-
 <body>
 <h1>🎂 A Birthday Quiz Just For You 🐸</h1>
 <button id="startBtn">Start Quiz</button>
@@ -220,12 +341,35 @@
 
 <div id="finalMessage"></div>
 
-<!-- Optional: Add video container for the final message -->
 <div id="videoContainer">
     <video width="640" height="360" controls>
         <source src="./DSC_0765.MOV" type="video/mp4">
         Your browser does not support the video tag.
     </video>
+</div>
+
+<div id="sliderContainer">
+    <div class="slider">
+        <div class="slides">
+            <div class="slide"><img src="slider/slide1.png" alt="Memory 1"></div>
+            <div class="slide"><img src="slider/slide2.png" alt="Memory 2"></div>
+            <div class="slide"><img src="slider/slide3.png" alt="Memory 3"></div>
+            <div class="slide"><img src="slider/slide4.png" alt="Memory 4"></div>
+            <div class="slide"><img src="slider/slide5.png" alt="Memory 5"></div>
+            <div class="slide"><img src="slider/slide-6.png" alt="Memory 6"></div>
+            <div class="slide"><img src="slider/slide-7.png" alt="Memory 7"></div>
+            <div class="slide"><img src="slider/slide-8.png" alt="Memory 8"></div>
+            <div class="slide"><img src="slider/slide-9.png" alt="Memory 9"></div>
+            <div class="slide"><img src="slider/slide-10.png" alt="Memory 10"></div>
+            <div class="slide"><img src="slider/slide-11.png" alt="Memory 11"></div>
+            <div class="slide"><img src="slider/slide-12.png" alt="Memory 12"></div>
+            <div class="slide"><img src="slider/slide-13.jpg" alt="Memory 13"></div>
+            <div class="slide"><img src="slider/slide-14.jpg" alt="Memory 14"></div>
+        </div>
+        <button class="prev slide-button" onclick="moveSlide(-1)">❮</button>
+        <button class="next slide-button" onclick="moveSlide(1)">❯</button>
+    </div>
+    <button onclick="showVideo()">Watch Video</button>
 </div>
 
 <script>
@@ -261,6 +405,7 @@
         }];
 
     let current = 0;
+    let slideIndex = 0;
 
     document.getElementById("startBtn").addEventListener("click", () => {
         document.getElementById("startBtn").style.display = "none";
@@ -275,16 +420,13 @@
         document.getElementById("question").innerText = q.q;
         document.getElementById("message").innerText = "";
 
-        // Generate answer options
         const optionsContainer = document.getElementById("options");
         optionsContainer.innerHTML = "";
         const allOptions = [q.a, ...q.distractors];
-        // Shuffle options
         for (let i = allOptions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [allOptions[i], allOptions[j]] = [allOptions[j], allOptions[i]];
         }
-        // Create radio buttons
         allOptions.forEach(option => {
             const label = document.createElement("label");
             label.className = "radio-option";
@@ -322,26 +464,30 @@
         document.getElementById("quiz").style.display = "none";
         document.getElementById("finalMessage").style.display = "block";
         document.getElementById("finalMessage").innerHTML = `
-                💌 Happy Birthday, My Dearest Love 💌<br><br>
-                From the very bottom of my heart, I want to take a moment to remind you just how grateful I am that you’re here with me. Every single day spent together is a reminder of how lucky I am to have you by my side.<br><br>
-                I still remember the early days when we were just starting out — how I’d always be thinking of new things for us to talk about, just to learn more about each other. It was never hard because I always wanted to know everything about you, to understand you more deeply. From the very beginning, I knew it was meant to be you.<br><br>
-                Every second shared with you fills my heart with joy that words can barely describe. You’ve become my safe space, my peace, and happiness. You shine so brightly that everything around me feels warm and comforting, just like home.<br><br>
-                You, my love, are the most beautiful, funniest, and kind-hearted person I know. Every part of you is worth celebrating, and today, we celebrate the wonderful person that you are. Your smile, your heart, your laughter — they’re the things that make life so special.<br><br>
-                So here’s to you, my love — to your laughter, your beautiful soul, and that glow you carry every day.<br><br>
-                I love you more than words could ever express. You are my forever, my first and last love, the one I’ll always choose — now and always. ❤️<br><br>
-                With all my love,<br>
-                Your forever crazy developer wifey 😉<br><br>
-                I hope this little quiz I put together for you made your heart smile today, because that’s all I ever want to do — make you smile, laugh, and feel like the most loved person in the world.<br><br>
-                And by the way, I have a small video for you! If you're ready, please click on the button below. 🎥💖<br>
-                <button onclick="showVideo()">Watch Video</button>
-            `;
+            💌 Happy Birthday, My Dearest Love 💌<br><br>
+            From the very bottom of my heart, I want to take a moment to remind you just how grateful I am that you’re here with me. Every single day spent together is a reminder of how lucky I am to have you by my side.<br><br>
+            I still remember the early days when we were just starting out — how I’d always be thinking of new things for us to talk about, just to learn more about each other. It was never hard because I always wanted to know everything about you, to understand you more deeply. From the very beginning, I knew it was meant to be you.<br><br>
+            Every second shared with you fills my heart with joy that words can barely describe. You’ve become my safe space, my peace, and happiness. You shine so brightly that everything around me feels warm and comforting, just like home.<br><br>
+            You, my love, are the most beautiful, funniest, and kind-hearted person I know. Every part of you is worth celebrating, and today, we celebrate the wonderful person that you are. Your smile, your heart, your laughter — they’re the things that make life so special.<br><br>
+            So here’s to you, my love — to your laughter, your beautiful soul, and that glow you carry every day.<br><br>
+            I love you more than words could ever express. You are my forever, my first and last love, the one I’ll always choose — now and always. ❤️<br><br>
+            With all my love,<br>
+            Your forever crazy developer wifey 😉<br><br>
+            I hope this little quiz I put together for you made your heart smile today, because that’s all I ever want to do — make you smile, laugh, and feel like the most loved person in the world.<br><br>
+            And by the way, I have a small surprise for you! If you're ready, please click on the button below to see some special memories. 🎉💖<br>
+            <button onclick="showSlider()">View Memories</button>
+        `;
+    }
+
+    function showSlider() {
+        document.getElementById("finalMessage").style.display = "none";
+        document.getElementById("sliderContainer").style.display = "block";
+        showSlides(slideIndex);
     }
 
     function showVideo() {
-        document.getElementById("finalMessage").style.display = "none";
+        document.getElementById("sliderContainer").style.display = "none";
         document.getElementById("videoContainer").style.display = "block";
-        const ytSrc = "https://www.youtube.com/embed/5LZyQrrUrb8?autoplay=1&mute=0&loop=1&playlist=5LZyQrrUrb8";
-        document.getElementById("ytIframe").src = ytSrc;
     }
 
     function startHearts() {
@@ -359,6 +505,19 @@
     const music = document.getElementById('backgroundMusic');
     function playMusic() {
         music.play().catch(err => console.log("Playback blocked:", err));
+    }
+
+    function showSlides(index) {
+        const slides = document.querySelector('.slides');
+        const slideCount = document.querySelectorAll('.slide').length;
+        if (index >= slideCount) slideIndex = 0;
+        if (index < 0) slideIndex = slideCount - 1;
+        slides.style.transform = `translateX(${-slideIndex * 100}%)`;
+    }
+
+    function moveSlide(n) {
+        slideIndex += n;
+        showSlides(slideIndex);
     }
 </script>
 </body>
