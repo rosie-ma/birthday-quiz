@@ -25,7 +25,7 @@
         margin-bottom: 30px;
       }
 
-      button {
+      button:not(.toggle-btn) {
         padding: 12px 24px;
         font-size: 18px;
         font-weight: 600;
@@ -40,18 +40,33 @@
         display: inline-block;
       }
 
-      button:not(.slide-button):hover {
+      button:not(.slide-button, .toggle-btn):hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         background: linear-gradient(45deg, #ff8c8c, #ff69b4);
       }
 
-      button:not(.slide-button):active {
+      button:not(.slide-button, .toggle-btn):active {
         transform: translateY(0);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       }
 
-      #quiz,
+      #quiz {
+        display: none;
+        transition: opacity 0.5s ease-in-out;
+        max-width: 90%;
+        margin: 0 auto;
+        opacity: 0;
+
+        #quizContainer {
+          background: rgba(255, 255, 255, 0.9);
+          padding: 20px;
+          width: fit-content;
+          margin: 0 auto;
+          border-radius: 15px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+      }
       #finalMessage,
       #videoContainer,
       #sliderContainer {
@@ -94,7 +109,7 @@
       #message {
         margin-top: 15px;
         font-size: 1.1em;
-        color: #e91e63;
+        color: #ff69b4;
       }
 
       #finalMessage {
@@ -265,9 +280,37 @@
       }
 
       @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      #musicControl {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        height: 30px;
+        background: white;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        line-height: 30px;
+        text-align: center;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.3s, background 0.3s;
+        z-index: 1000;
+
+        #musicControl:hover {
+          opacity: 1;
+          background: rgba(255, 105, 180, 0.7);
+        }
       }
 
       @media (max-width: 600px) {
@@ -381,12 +424,21 @@
           background: rgba(255, 105, 180, 1);
           transform: scale(1.1);
         }
+
+        #musicControl {
+          width: 25px;
+          height: 25px;
+          font-size: 14px;
+          line-height: 25px;
+          bottom: 15px;
+          right: 15px;
+        }
       }
     </style>
 </head>
 <body>
-<div id="loading">Loading your special birthday surprise... 💖</div>
-<h1>🎂 A Birthday Quiz Just For You 🐸</h1>
+<div id="loading">Loading your special birthday surprise...🤍</div>
+<h1>🎂 A Birthday Quiz Just For You 🎉</h1>
 <button id="startBtn">Start Quiz</button>
 
 <audio id="backgroundMusic" loop>
@@ -394,11 +446,15 @@
     Your browser does not support the audio element.
 </audio>
 
+<button id="musicControl" class="toggle-btn" title="Toggle Music">▶️</button>
+
 <div id="quiz">
-    <div id="progress"></div>
-    <div id="question"></div>
-    <div id="options"></div>
-    <button onclick="checkAnswer()">Submit</button>
+    <div id="quizContainer">
+        <div id="progress"></div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <button onclick="checkAnswer()">Submit</button>
+    </div>
     <div id="message"></div>
 </div>
 
@@ -414,20 +470,48 @@
 <div id="sliderContainer">
     <div class="slider">
         <div class="slides">
-            <div class="slide"><img src="slider/slide1.png" alt="Memory 1"><div class="caption">Waiting to meet each other</div></div>
-            <div class="slide"><img src="slider/slide2.png" alt="Memory 2"><div class="caption">Our first Date</div></div>
-            <div class="slide"><img src="slider/slide3.png" alt="Memory 3"><div class="caption">Meeting my family for the first time</div></div>
-            <div class="slide"><img src="slider/slide4.png" alt="Memory 4"><div class="caption">At friends party</div></div>
-            <div class="slide"><img src="slider/slide5.png" alt="Memory 5"><div class="caption">The day our family started</div></div>
-            <div class="slide"><img src="slider/slide-6.png" alt="Memory 6"><div class="caption">Celebrating our Nshan</div></div>
-            <div class="slide"><img src="slider/slide-7.png" alt="Memory 7"><div class="caption">Favorite place to take winter photos</div></div>
-            <div class="slide"><img src="slider/slide-8.png" alt="Memory 8"><div class="caption">The best day every</div></div>
-            <div class="slide"><img src="slider/slide-9.png" alt="Memory 9"><div class="caption">The day we said "I Do" to each other</div></div>
-            <div class="slide"><img src="slider/slide-10.png" alt="Memory 10"><div class="caption">First corporate party with our girl</div></div>
-            <div class="slide"><img src="slider/slide-11.png" alt="Memory 11"><div class="caption">Hard days which became memories</div></div>
-            <div class="slide"><img src="slider/slide-12.png" alt="Memory 12"><div class="caption">Happiest day of our life</div></div>
-            <div class="slide"><img src="slider/slide-13.jpg" alt="Memory 13"><div class="caption">The sign of three</div></div>
-            <div class="slide"><img src="slider/slide-14.jpg" alt="Memory 14"><div class="caption">Your Little Family</div></div>
+            <div class="slide"><img src="slider/slide1.png" alt="Memory 1">
+                <div class="caption">Waiting to meet each other</div>
+            </div>
+            <div class="slide"><img src="slider/slide2.png" alt="Memory 2">
+                <div class="caption">Our first Date</div>
+            </div>
+            <div class="slide"><img src="slider/slide3.png" alt="Memory 3">
+                <div class="caption">Meeting my family for the first time</div>
+            </div>
+            <div class="slide"><img src="slider/slide4.png" alt="Memory 4">
+                <div class="caption">At friends party</div>
+            </div>
+            <div class="slide"><img src="slider/slide5.png" alt="Memory 5">
+                <div class="caption">The day our family started</div>
+            </div>
+            <div class="slide"><img src="slider/slide-6.png" alt="Memory 6">
+                <div class="caption">Celebrating our Nshan</div>
+            </div>
+            <div class="slide"><img src="slider/slide-7.png" alt="Memory 7">
+                <div class="caption">Favorite place to take winter photos</div>
+            </div>
+            <div class="slide"><img src="slider/slide-8.png" alt="Memory 8">
+                <div class="caption">The best day every</div>
+            </div>
+            <div class="slide"><img src="slider/slide-9.png" alt="Memory 9">
+                <div class="caption">The day we said "I Do" to each other</div>
+            </div>
+            <div class="slide"><img src="slider/slide-10.png" alt="Memory 10">
+                <div class="caption">First corporate party with our girl</div>
+            </div>
+            <div class="slide"><img src="slider/slide-11.png" alt="Memory 11">
+                <div class="caption">Hard days which became memories</div>
+            </div>
+            <div class="slide"><img src="slider/slide-12.png" alt="Memory 12">
+                <div class="caption">Happiest day of our life</div>
+            </div>
+            <div class="slide"><img src="slider/slide-13.jpg" alt="Memory 13">
+                <div class="caption">The sign of three</div>
+            </div>
+            <div class="slide"><img src="slider/slide-14.jpg" alt="Memory 14">
+                <div class="caption">Your Little Family</div>
+            </div>
         </div>
         <button class="prev slide-button" onclick="moveSlide(-1)">❮</button>
         <button class="next slide-button" onclick="moveSlide(1)">❯</button>
@@ -463,7 +547,7 @@
         {
             q: "5. What does Sash deserve today, more than anything?",
             a: "All of the above and more!",
-            msg: "YES! Your smile is my favorite view every single day 😍...",
+            msg: "YES! You deserve the best every day of your life, my love! 😍...",
             distractors: ["A happy birthday full of love", "Sleep", "Cake"]
         }];
 
@@ -523,9 +607,9 @@
             document.getElementById("message").innerText = questions[current].msg;
             current++;
             if (current < questions.length) {
-                setTimeout(loadQuestion, 2000);
+                setTimeout(loadQuestion, 3500);
             } else {
-                setTimeout(showFinalMessage, 2000);
+                setTimeout(showFinalMessage, 3500);
             }
         } else {
             document.getElementById("message").innerText = "Hmm... wrong answer, try again my love 💕";
@@ -557,7 +641,7 @@
             confetti({
                 particleCount: 100,
                 spread: 70,
-                origin: { y: 0.6 },
+                origin: {y: 0.6},
                 colors: ['#ff69b4', '#ff8c8c', '#ffe4e1']
             });
         }, 500);
@@ -587,24 +671,40 @@
     }
 
     function startHearts() {
+        const emojis = ['🤍', '🩷'];
         setInterval(() => {
             const heart = document.createElement('div');
             heart.className = 'heart';
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.innerText = '💖';
+            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             heart.style.fontSize = (Math.random() * 8 + 12) + 'px';
             heart.addEventListener('click', () => {
                 alert('Happy Birthday Love! ❤️');
             });
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 4000);
-        }, 600);
+        }, 1000);
     }
 
     const music = document.getElementById('backgroundMusic');
+
     function playMusic() {
         music.play().catch(err => console.log("Playback blocked:", err));
+        document.getElementById('musicControl').innerText = '⏸️';
     }
+
+    function toggleMusic() {
+        if (music.paused) {
+            music.currentTime = 0; // Replay from start
+            music.play().catch(err => console.log("Playback blocked:", err));
+            document.getElementById('musicControl').innerText = '⏸️';
+        } else {
+            music.pause();
+            document.getElementById('musicControl').innerText = '▶️';
+        }
+    }
+
+    document.getElementById('musicControl').addEventListener('click', toggleMusic);
 
     function showSlides(index) {
         const slides = document.querySelector('.slides');
