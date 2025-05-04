@@ -7,6 +7,12 @@
     <link rel="icon" type="image/x-icon" href="./favicon.png.png">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
       body {
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, #fef5e7, #ffe4e1);
@@ -67,6 +73,7 @@
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
       }
+
       #finalMessage,
       #videoContainer,
       #sliderContainer {
@@ -120,8 +127,9 @@
       }
 
       #videoContainer video {
-        max-width: 100%;
-        height: auto;
+        height: 95vh;
+        max-height: 100%;
+        width: auto;
         border-radius: 10px;
       }
 
@@ -356,8 +364,10 @@
         }
 
         #videoContainer video {
-          max-width: 100%;
-          height: auto;
+          height: 95vh;
+          max-height: 100%;
+          width: auto;
+          border-radius: 10px;
         }
 
         .radio-option {
@@ -437,7 +447,7 @@
 </head>
 <body>
 <div id="loading">Loading your special birthday surprise...🤍</div>
-<h1>🎂 A Birthday Quiz Just For You 🎉</h1>
+<h1 id="heading">🎂 A Birthday Quiz Just For You 🎉</h1>
 <button id="startBtn">Start Quiz</button>
 
 <audio id="backgroundMusic" loop>
@@ -460,10 +470,7 @@
 <div id="finalMessage"></div>
 
 <div id="videoContainer">
-    <video controls>
-        <source src="./video/video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <video id="videoPlayer" controls></video>
 </div>
 
 <div id="sliderContainer">
@@ -660,13 +667,45 @@
 
     function showVideo() {
         const sliderContainer = document.getElementById("sliderContainer");
+        const header = document.getElementById("heading");
         sliderContainer.classList.remove("active");
         setTimeout(() => {
             sliderContainer.style.display = "none";
+            header.style.display = "none";
             const videoContainer = document.getElementById("videoContainer");
             videoContainer.style.display = "block";
             videoContainer.classList.add("active");
         }, 500);
+        const videoFiles = [
+            "video/video1.mp4",
+            "video/video2.mp4",
+            "video/video3.mp4",
+            "video/video4.mp4",
+            "video/video5.mp4",
+            "video/video6.mp4",
+            "video/video7.mp4",
+            "video/video8.mp4",
+            "video/video9.mp4",
+            "video/video10.mp4",
+            "video/video11.mp4",
+            "video/video12.mp4",
+            // Add all your video paths here
+        ];
+
+        let currentIndex = 0;
+        const player = document.getElementById("videoPlayer");
+
+        function playNextVideo() {
+            if (currentIndex < videoFiles.length) {
+                player.src = videoFiles[currentIndex];
+                player.play();
+                currentIndex++;
+            }
+        }
+
+        player.addEventListener("ended", playNextVideo);
+        playNextVideo();
+
     }
 
     function startHearts() {
