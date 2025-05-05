@@ -470,7 +470,10 @@
 <div id="finalMessage"></div>
 
 <div id="videoContainer">
-    <video id="videoPlayer" controls></video>
+    <video id="videoPlayer" controls>
+        <source src="https://dl.dropboxusercontent.com/scl/fi/37jqgtpqlyb22h82mayd4/InShot_20250504_184721829.mp4?rlkey=5q0gkzjhbn2t75f7iok1306ix&st=bekhc0qn" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 </div>
 
 <div id="sliderContainer">
@@ -676,36 +679,6 @@
             videoContainer.style.display = "block";
             videoContainer.classList.add("active");
         }, 500);
-        const videoFiles = [
-            "./video/video1.mp4",
-            "./video/video2.mp4",
-            "./video/video3.mp4",
-            "./video/video4.mp4",
-            "./video/video5.mp4",
-            "./video/video6.mp4",
-            "./video/video7.mp4",
-            "./video/video8.mp4",
-            "./video/video9.mp4",
-            "./video/video10.mp4",
-            "./video/video11.mp4",
-            "./video/video12.mp4",
-            // Add all your video paths here
-        ];
-
-        let currentIndex = 0;
-        const player = document.getElementById("videoPlayer");
-
-        function playNextVideo() {
-            if (currentIndex < videoFiles.length) {
-                player.src = videoFiles[currentIndex];
-                player.play();
-                currentIndex++;
-            }
-        }
-
-        player.addEventListener("ended", playNextVideo);
-        playNextVideo();
-
     }
 
     function startHearts() {
